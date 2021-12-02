@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Motion Detection</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>  
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="buffer-loader.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+
+    <script src="p5.js"></script>
+
+    <video id="webcam" autoplay playsinline width = "1200" height="900"></video>
+    <canvas id="canvas" class="d-none"></canvas>
+    
+  </head>
+  <body>
+    <main id="motion-app">
+      <div class="form-control webcam-start" id="webcam-control">
+              <label class="form-switch">
+              <input type="checkbox" id="webcam-switch">
+              <i></i> 
+              <span id="webcam-caption">Click to Start Webcam</span>
+              </label>                        
+      </div>
+      <div id="errorMsg" class="col-12 alert-danger d-none">
+      Fail to start camera <br>
+      1. Please allow permission to access camera. <br>
+      2. If you are browsing through social media built in browsers, look for the ... or browser icon on the right top/bottom corner, and open the page in Sarafi (iPhone)/ Chrome (Android)
+      </div>
+
+    <div class="md-modal md-effect-12">
+      <div class="app-panel md-content">            
+          <div class="webcam-container d-none">
+              <video id="webcam" autoplay playsinline width="640" height="480"></video>
+              <canvas id="canvas-source" width="1200" height="900"></canvas>
+              <div class="motion-cam">
+                  <canvas id="canvas-blended" width="1200" height="900"></canvas>
+              </div>
+          </div>
+          <div class = "screen">
+            <div class = "right">
+              <img src="assets/right.png" class = "detecting-half" vd-id='0' name = 'right'>
+            </div>
+              
+            <div class = "left">
+              <img src="assets/left.png" class = "detecting-half" vd-id='1' name = 'left'>
+            </div>
+          </div>
+      </div>
+    </main>
+
+    <script src="sketch.js"></script>
+    <script src='motion-detection.js'></script>
+</body>
+</html>
