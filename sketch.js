@@ -129,7 +129,7 @@ window.requestAnimFrame = (function(){
 function update() {
     drawVideo();
     blend();
-    //checkAreas();
+    checkAreas();
     requestAnimFrame(update);
 }
 
@@ -199,15 +199,26 @@ function checkAreas() {
               // over a small limit, consider that a movement is detected
               // play a note and show a visual feedback to the user
               console.log(thisSide);
-              if(thisSide.name == 'right'){
-                //playRipples();
-              } else {
-                //p
-              }
-              //playHover(drum);          
+              playPendulum();      
           }
         }
     }
+}
+
+function playPendulum(){
+  //populate pendulums
+  rightSide = sides[0];
+  width = rightSide.width;
+  height = rightSide.height;
+  console.log(width);
+  console.log(height);
+  for(let w = 50; w < width; w+= (w/8)){
+    for(let h = 50; h < height; h += 100){
+      p = new Pendulum(createVector(w,h),100);
+      p.render();
+    }
+  }
+  //if onClick 
 }
 
 // function playAnimate(drum){
