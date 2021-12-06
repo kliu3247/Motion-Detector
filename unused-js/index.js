@@ -1,19 +1,40 @@
+
 const webcamElement = document.getElementById('webcam');
-const webcam = new Webcam(webcamElement, 'user')
+// const webcam = new Webcam(webcamElement, 'user')
+const snapSoundElement = document.getElementById('snapSound');
+let canv
+let webcam
 let timeOut, lastImageData;
 let canvasSource = $("#canvas-source")[0];
+
 let canvasBlended = $("#canvas-blended")[0];
 let contextSource = canvasSource.getContext('2d');
 let contextBlended = canvasBlended.getContext('2d');
+console.log(contextSource)
 let sides = {};
 const audioPath = "sound"
 
 contextSource.translate(canvasSource.width, 0);
 contextSource.scale(-1, 1);
 
-const canvasElement = document.getElementById('canvas');
-//const snapSoundElement = document.getElementById('snapSound');
-//const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
+function setup(){
+     canv = createCanvas(1200, 900)
+    //createCanvas(1000, 1000) 
+    // console.log(canv)
+   webcam = new Webcam(webcamElement, 'user', canv.elt, snapSoundElement);
+}
+
+function draw(){
+    background(200,20,200)
+    fill([0,0,200])
+    ellipse(200,200,200)
+}
+
+
+// const canvasElement = document.getElementById('canvas');
+
+
 
 // webcam.start()
 //    .then(result =>{
@@ -33,7 +54,7 @@ $("#webcam-switch").change(function () {
             startMotionDetection();
           })
           .catch(err => {
-              displayError();
+              displayError(err);
           });
   }
   else {        
@@ -115,7 +136,7 @@ function setDrumReady(drum) {
   drum.ready = true;
 }
 
-window.requestAnimFrame = (function(){
+window.requestAnimFrame = (function(){"d-none"
     return  window.requestAnimationFrame       ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
@@ -141,6 +162,7 @@ function blend() {
     var width = canvasSource.width;
     var height = canvasSource.height;
     // get webcam image data
+    console.log(contextSource)
     var sourceData = contextSource.getImageData(0, 0, width, height);
     // create an image if the previous image doesn’t exist
     if (!lastImageData) lastImageData = contextSource.getImageData(0, 0, width, height);
@@ -257,4 +279,8 @@ function cameraStopped(){
   $(".webcam-container").addClass("d-none");
   $("#webcam-caption").html("Click to Start Webcam");
   $('.md-modal').removeClass('md-show');
+}
+
+const displayError = (e) => {
+    console.log(e)
 }

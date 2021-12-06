@@ -4,20 +4,24 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Motion Detection</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="js/p5/p5.min.js"></script>
+    <script src="js/p5/p5.dom.min.js"></script>
+    <script src="js/p5/p5.sound.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>  
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="js/buffer-loader.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.22/p5.min.js"></script>
+    <script src="js/Webcam.js"></script>
+    <script src='js/pendulum.js'></script>
+    <script src="js/motionDetection.js"></script>
+        <!-- <script src='js/motion-detection.js'></script> -->
+    <!-- <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+   -->
 
 
     <video id="webcam" autoplay playsinline width = "1200" height="900"></video>
-    <canvas id="canvas" class="d-none"></canvas>
+    <!-- <canvas id="canvas" class="d-none"></canvas> -->
     
   </head>
   <body>
@@ -47,19 +51,16 @@
           <div class = "screen">
             <div class = "right">
               <img src="assets/right.png" class = "detecting-half" vd-id='0' name = 'right'>
-              <!--div class = "detecting-half" vd-id='0' name = 'right'-->
             </div>
               
             <div class = "left">
               <img src="assets/left.png" class = "detecting-half" vd-id='1' name = 'left'>
-              <!--div class = "detecting-half" vd-id='1' name = 'left'-->
             </div>
           </div>
       </div>
     </main>
 
-    <script src='js/pendulum.js'></script>
-    <script src="sketch.js"></script>
-    <script src='js/motion-detection.js'></script>
+    <script src="js/sketch.js"></script>
+
 </body>
 </html>

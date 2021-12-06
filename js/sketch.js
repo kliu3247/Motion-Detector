@@ -5,16 +5,11 @@ let canv
 let webcam
 let timeOut, lastImageData
 let sides = {};
+let pendulums = []
 let canvasSource = $("#canvas-source")[0];
 let canvasBlended = $("#canvas-blended")[0];
 let contextSource = canvasSource.getContext('2d')
 let contextBlended = canvasBlended.getContext('2d');
-
-let pendulums = {};
-
-contextSource.translate(canvasSource.width, 0);
-contextSource.scale(-1, 1);
-
 
 $('.detecting-half').on('load', function () {
   var viewWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -34,38 +29,30 @@ $('.detecting-half').on('load', function () {
 });
 
 function setup(){
-  canv = createCanvas(1200, 900)
-   //createCanvas(1000, 1000) 
-   // console.log(canv)
+    canv = createCanvas(1200, 900)
+  
   webcam = new Webcam(webcamElement, 'user', canv.elt, snapSoundElement);
-  //p = new Pendulum(createVector(width/2,0),175);
-
   leftSide = sides[0];
   width = leftSide.width;
   height = leftSide.height;
   let i = 0;
-  for(let w = 50; w < width; w+= (w/8)){
-    for(let h = 50; h < height; h += 100){
-      pendulums[i] = new Pendulum(createVector(w,h),60);
-      console.log(pendulums[i]);
+  for(let w = 50; w < width; w+= 50){
+    for(let h = 50; h < height; h += 50){
+      pendulums[i] = new Pendulum(createVector(w,h),30);
       i++;
     }
   }
-
 }
 
 function draw(){
-  playPendulum();
-  
-  drawVideo();
-  blending();
-  
-  checkAreas();
-  //background(200,20,200)
-  fill([0,0,200])
-  ellipse(200,200,200)
-  
- 
+    drawVideo();
+    blending();
+    checkAreas();
+    background(0,0,0)
+    //fill([0,0,200])
+    //ellipse(200,200,200)
+    playPendulum();
+
 }
 
 
@@ -98,7 +85,7 @@ $("#webcam-switch").change(function () {
         $("#errorMsg").addClass("d-none");
         webcam.stop();
         cameraStopped();
-        //setAllDrumReadyStatus(false);
+        setAllDrumReadyStatus(false);
     }        
   });
 
@@ -122,9 +109,11 @@ $("#webcam-switch").change(function () {
     $('.md-modal').removeClass('md-show');
   }
 
+
   const displayError = (e) => {
     console.log(e)
 }
+
 
 
 function update() {
@@ -162,7 +151,7 @@ function fastAbs(value) {
 
 function threshold(value) {
 //Display jump to trigger?
-  return (value > 0x30) ? 0xFF : 0;
+  return (value > 0x25) ? 0xFF : 0;
 }
 
 function differenceAccuracy(target, data1, data2) {
@@ -180,98 +169,113 @@ function differenceAccuracy(target, data1, data2) {
   }
 }
 
+// function checkAreas() {
+//   // loop over the drum areas
+//   for (var side in sides) {
+//     //right side, pendulum
+//       //right side
+//       var thisSide = sides[side];
+//       if(thisSide.x>0 || thisSide.y>0){
+//         var blendedData = contextBlended.getImageData(thisSide.x, thisSide.y, thisSide.width, thisSide.height);
+//           var i = 0;
+//           var average = 0;
+//           // loop over the pixels
+//           while (i < (blendedData.data.length * 0.25)) {
+//               // make an average between the color channel
+//               average += (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3;
+//               ++i;
+//           }
+//           // calculate an average between of the color values of the drum area
+//           average = Math.round(average / (blendedData.data.length * 0.25));
+//           //console.log(average);
+//           if (average > 20) {
+//               // over a small limit, consider that a movement is detected
+//               // play a note and show a visual feedback to the user
+//               //console.log(drum.name + '-' + average)
+//               console.log(average);
+//           }
+//         }
+//       }
+// }
+
+
 function checkAreas() {
   // loop over the drum areas
   for (var side in sides) {
+    //right side, pendulum
+      //right side
       var thisSide = sides[side];
-      if(thisSide.x>=0 || thisSide.y>=0){
+      if(thisSide.x>0 || thisSide.y>0){
         var blendedData = contextBlended.getImageData(thisSide.x, thisSide.y, thisSide.width, thisSide.height);
-        var i = 0;
-        var average = 0;
-        // loop over the pixels
-        while (i < (blendedData.data.length * 0.25)) {
-            // make an average between the color channel
-            average += (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3;
-            ++i;
-        }
-        // calculate an average between of the color values of the drum area
-        average = Math.round(average / (blendedData.data.length * 0.25));
-        if (average > 20) {
-            // over a small limit, consider that a movement is detected
-            // play a note and show a visual feedback to the user
-            //console.log(thisSide); 
-            fill([0,200,0])
-            ellipse(200,20,200)     
+          var i = 0;
+          var average = 0;
+          var highestAverageSpot = 0;
+          var currHighest = 0;
+          
+          // loop over the pixels
+          while (i < (blendedData.data.length * 0.25)) {
+              // make an average between the color channel
+              var currSum = (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3
+              if (currSum > currHighest) {
+                highestAverageSpot = i;
+                currHighest = currSum;
+              }
+              average += currSum;
+              ++i;
+          }
+          // calculate an average between of the color values of the drum area
+          average = Math.round(average / (blendedData.data.length * 0.25));
+          //console.log(average);
+          if (average > 20) {
+              // over a small limit, consider that a movement is detected
+              // play a note and show a visual feedback to the user
+              //console.log(drum.name + '-' + average)
+              //console.log(average);
+              //console.log(highestAverageSpot);
+              var x = (highestAverageSpot / 4) % thisSide.width;
+              var y = Math.floor((highestAverageSpot / 4) / thisSide.width);
+              //console.log(x)
+              console.log(y)
+              //ellipse(56, 46, 55, 55);
+              playPendulum(x,y);
+          }
         }
       }
-  }
 }
 
 
-function playPendulum(side){
+function playPendulum(x, y){
   //populate pendulums
-  for (var p in pendulums){
-    pendulums[p].render();
+  if (x == null || y == null){
+    for (var p in pendulums){
+      pendulums[p].render(false);
+    }
+  } else {
+    x = Math.floor(x/50);
+    y = Math.floor(y/2);
+
+    totalBalls = 0;
+    if (y == 0){
+      totalBalls = x;
+    } else {
+      totalBalls = Math.floor(sides[0]/50) * (y-1) + x;
+    }
+    
+
+    if (totalBalls < pendulums.length){
+      console.log("will do")
+      pendulums[totalBalls].render(true);
+    }
+    
   }
-  // leftSide = sides[0];
-  // width = leftSide.width;
-  // height = leftSide.height;
-  // console.log(width);
-  // console.log(height);
-  // for(let w = 50; w < width; w+= (w/8)){
-  //   for(let h = 50; h < height; h += 100){
-  //     p = new Pendulum(createVector(w,h),100);
-  //     p.render();
-  //   }
-  // }
-  //if onClick 
+ 
 }
+
+
 
 
 function startMotionDetection() {   
   // setAllDrumReadyStatus(false);
   update();
   // setTimeout(setAllDrumReadyStatus, 1000, true);
-}
-
-
-function Pendulumm(origin_, r_) {
-  // Fill all variables
-  this.origin = origin_.copy();
-  this.position = createVector();
-  this.r = r_;
-  this.angle = PI/4;
-
-  this.aVelocity = 0.0;
-  this.aAcceleration = 0.0;
-  this.damping = 0.995;   // Arbitrary damping
-  this.ballr = 48.0;      // Arbitrary ball radius
-
-  this.render = function() {
-    this.update();
-    this.display();
-  };
-
-  // Function to update position
-  this.update = function() {
-    var gravity = 0.8;                                               // Arbitrary constant
-    this.aAcceleration = (-1 * gravity / this.r) * sin(this.angle);  // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
-    this.aVelocity += this.aAcceleration;                            // Increment velocity
-    this.aVelocity *= this.damping;                                  // Arbitrary damping
-    this.angle += this.aVelocity;                                    // Increment angle
-  };
-
-  this.display = function() {
-    this.position.set(this.r*sin(this.angle), this.r*cos(this.angle), 0);         // Polar to cartesian conversion
-    this.position.add(this.origin);                                               // Make sure the position is relative to the pendulum's origin
-
-    stroke(255);
-    strokeWeight(2);
-    // Draw the arm
-    line(this.origin.x, this.origin.y, this.position.x, this.position.y);
-    ellipseMode(CENTER);
-    fill(127);
-    // Draw the ball
-    ellipse(this.position.x, this.position.y, this.ballr, this.ballr);
-  };
 }

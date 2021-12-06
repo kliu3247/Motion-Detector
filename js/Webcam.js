@@ -1,4 +1,4 @@
-export default class Webcam {
+class Webcam {
     constructor(webcamElement, facingMode = 'user', canvasElement = null, snapSoundElement = null) {
       this._webcamElement = webcamElement;
       this._webcamElement.width = this._webcamElement.width || 640;
@@ -172,7 +172,7 @@ export default class Webcam {
           context.translate(this._canvasElement.width, 0);
           context.scale(-1, 1);
         }
-        context.clearRect(0, 0, this._canvasElement.width, this._canvasElement.height);
+        // context.clearRect(0, 0, this._canvasElement.width, this._canvasElement.height);
         context.drawImage(this._webcamElement, 0, 0, this._canvasElement.width, this._canvasElement.height);
         let data = this._canvasElement.toDataURL('image/png');
         return data;
