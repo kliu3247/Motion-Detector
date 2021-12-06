@@ -13,13 +13,24 @@ display: block;
   top: 0px;
 }
 
+/*
 .right{
+  width: 600px;
+  height: 900px;
+  left: 600px;
+  top: 0px;
 
+  background: rgba(40, 234, 83, 0.32);
 }
 
 .left{
-
-}
+  width: 600px;
+  height: 900px;
+  left: 0px;
+  top: 0px;
+  
+  background: rgba(234, 40, 226, 0.32);
+}*/
 
 #canvas-source{
   display: none;
@@ -43,6 +54,7 @@ main {
   width: 100vw;
   height: 100vh;
   background: black;
+  background: transparent;
 }
 
 .app-panel{

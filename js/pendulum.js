@@ -8,20 +8,22 @@ class Pendulum{
         this.aVelocity = 0.0;
         this.aAcceleration = 0.0;
         this.damping = 0.995;   // Arbitrary damping
-        this.ballr = 48.0;      // Arbitrary ball radius
+        this.ballr = 20.0;      // Arbitrary ball radius
     }
 
     render() {
+        console.log("rendered")
         this.update();
         this.display();
     }    
     
-    update() {
+     update() {
         var gravity = 0.9;                                               // Arbitrary constant
         this.aAcceleration = (-1 * gravity / this.r) * sin(this.angle);  // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
         this.aVelocity += this.aAcceleration;                            // Increment velocity
         this.aVelocity *= this.damping;                                  // Arbitrary damping
         this.angle += this.aVelocity;                                    // Increment angle
+        console.log("updated")
     }
 
     display() {
