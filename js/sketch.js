@@ -11,6 +11,9 @@ let canvasBlended = $("#canvas-blended")[0];
 let contextSource = canvasSource.getContext('2d')
 let contextBlended = canvasBlended.getContext('2d');
 
+contextSource.translate(canvasSource.width, 0);
+contextSource.scale(-1, 1);
+
 $('.detecting-half').on('load', function () {
   var viewWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -36,8 +39,9 @@ function setup(){
   width = leftSide.width;
   height = leftSide.height;
   let i = 0;
-  for(let w = 50; w < width; w+= 50){
-    for(let h = 50; h < height; h += 50){
+  
+  for(let h = 50; h < height; h += 50){
+    for(let w = 50; w < width; w+= 50){
       pendulums[i] = new Pendulum(createVector(w,h),30);
       i++;
     }
@@ -151,7 +155,7 @@ function fastAbs(value) {
 
 function threshold(value) {
 //Display jump to trigger?
-  return (value > 0x25) ? 0xFF : 0;
+  return (value > 0x15) ? 0xFF : 0;
 }
 
 function differenceAccuracy(target, data1, data2) {
@@ -198,7 +202,6 @@ function differenceAccuracy(target, data1, data2) {
 //       }
 // }
 
-
 function checkAreas() {
   // loop over the drum areas
   for (var side in sides) {
@@ -216,9 +219,10 @@ function checkAreas() {
           while (i < (blendedData.data.length * 0.25)) {
               // make an average between the color channel
               var currSum = (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3
-              if (currSum > currHighest) {
+              var sumComparison = blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+3] + blendedData.data[i*4+4] + blendedData.data[i*4+5]
+              if (sumComparison > currHighest) {
                 highestAverageSpot = i;
-                currHighest = currSum;
+                currHighest = sumComparison;
               }
               average += currSum;
               ++i;
@@ -226,51 +230,96 @@ function checkAreas() {
           // calculate an average between of the color values of the drum area
           average = Math.round(average / (blendedData.data.length * 0.25));
           //console.log(average);
-          if (average > 20) {
-              // over a small limit, consider that a movement is detected
-              // play a note and show a visual feedback to the user
-              //console.log(drum.name + '-' + average)
-              //console.log(average);
-              //console.log(highestAverageSpot);
-              var x = (highestAverageSpot / 4) % thisSide.width;
-              var y = Math.floor((highestAverageSpot / 4) / thisSide.width);
-              //console.log(x)
-              console.log(y)
-              //ellipse(56, 46, 55, 55);
-              playPendulum(x,y);
+          if (average > 10) {
+              const val = Math.floor(map(highestAverageSpot, 0, blendedData.data.length/8, 0, pendulums.length-1))
+              playPendulum(val)
           }
         }
       }
 }
 
 
-function playPendulum(x, y){
-  //populate pendulums
-  if (x == null || y == null){
+// function checkAreas() {
+//   // loop over the drum areas
+//   for (var side in sides) {
+//     //right side, pendulum
+//       //right side
+//       var thisSide = sides[side];
+//       if(thisSide.x>0 || thisSide.y>0){
+//         var blendedData = contextBlended.getImageData(thisSide.x, thisSide.y, thisSide.width, thisSide.height);
+//           var i = 0;
+//           var average = 0;
+//           var highestAverageSpot = 0;
+//           var currHighest = 0;
+          
+//           // loop over the pixels
+//           while (i < (blendedData.data.length * 0.25)) {
+//               // make an average between the color channel
+//               var currSum = (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3
+//               if (currSum > currHighest) {
+//                 highestAverageSpot = i;
+//                 currHighest = currSum;
+//               }
+//               average += currSum;
+//               ++i;
+//           }
+//           // calculate an average between of the color values of the drum area
+//           average = Math.round(average / (blendedData.data.length * 0.25));
+//           //console.log(average);
+//           if (average > 20) {
+//               // over a small limit, consider that a movement is detected
+//               // play a note and show a visual feedback to the user
+//               //console.log(drum.name + '-' + average)
+//               //console.log(average);
+//               //console.log(highestAverageSpot);
+//               var x = (highestAverageSpot / 4) % thisSide.width;
+//               var y = Math.floor((highestAverageSpot / 4) / thisSide.width);
+//               //console.log(x)
+//               console.log(y)
+//               //ellipse(56, 46, 55, 55);
+//               playPendulum(x,y);
+//           }
+//         }
+//       }
+// }
+
+
+// function playPendulum(x, y){
+//   //populate pendulums
+//   if (x == null || y == null){
+//     for (var p in pendulums){
+//       pendulums[p].render(false);
+//     }
+//   } else {
+//     x = Math.floor(x/50);
+//     y = Math.floor(y/2);
+
+//     totalBalls = 0;
+//     if (y == 0){
+//       totalBalls = x;
+//     } else {
+//       totalBalls = Math.floor(sides[0]/50) * (y-1) + x;
+//     }
+    
+
+//     if (totalBalls < pendulums.length){
+//       console.log("will do")
+//       pendulums[totalBalls].render(true);
+//     }
+    
+//   }
+function playPendulum(val){
+  if (val == null || val == 0){
     for (var p in pendulums){
       pendulums[p].render(false);
     }
-  } else {
-    x = Math.floor(x/50);
-    y = Math.floor(y/2);
-
-    totalBalls = 0;
-    if (y == 0){
-      totalBalls = x;
-    } else {
-      totalBalls = Math.floor(sides[0]/50) * (y-1) + x;
-    }
-    
-
-    if (totalBalls < pendulums.length){
-      console.log("will do")
-      pendulums[totalBalls].render(true);
-    }
-    
   }
- 
+  console.log(val)
+  if (val < pendulums.length){
+    console.log("will do")
+    pendulums[val].render(true);
+  }
 }
-
 
 
 
