@@ -1,19 +1,40 @@
+
 const webcamElement = document.getElementById('webcam');
-const webcam = new Webcam(webcamElement, 'user')
+// const webcam = new Webcam(webcamElement, 'user')
+const snapSoundElement = document.getElementById('snapSound');
+let canv
+let webcam
 let timeOut, lastImageData;
 let canvasSource = $("#canvas-source")[0];
+
 let canvasBlended = $("#canvas-blended")[0];
 let contextSource = canvasSource.getContext('2d');
 let contextBlended = canvasBlended.getContext('2d');
+console.log(contextSource)
 let sides = {};
 const audioPath = "sound"
 
 contextSource.translate(canvasSource.width, 0);
 contextSource.scale(-1, 1);
 
-//const canvasElement = document.getElementById('canvas');
-//const snapSoundElement = document.getElementById('snapSound');
-//const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
+function setup(){
+     canv = createCanvas(1200, 900)
+    //createCanvas(1000, 1000) 
+    // console.log(canv)
+   webcam = new Webcam(webcamElement, 'user', canv.elt, snapSoundElement);
+}
+
+function draw(){
+    background(200,20,200)
+    fill([0,0,200])
+    ellipse(200,200,200)
+}
+
+
+// const canvasElement = document.getElementById('canvas');
+
+
 
 // webcam.start()
 //    .then(result =>{
@@ -33,7 +54,7 @@ $("#webcam-switch").change(function () {
             startMotionDetection();
           })
           .catch(err => {
-              displayError();
+              displayError(err);
           });
   }
   else {        
@@ -115,7 +136,7 @@ function setDrumReady(drum) {
   drum.ready = true;
 }
 
-window.requestAnimFrame = (function(){
+window.requestAnimFrame = (function(){"d-none"
     return  window.requestAnimationFrame       ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
@@ -129,7 +150,7 @@ window.requestAnimFrame = (function(){
 function update() {
     drawVideo();
     blend();
-    //checkAreas();
+    checkAreas();
     requestAnimFrame(update);
 }
 
@@ -141,6 +162,7 @@ function blend() {
     var width = canvasSource.width;
     var height = canvasSource.height;
     // get webcam image data
+    console.log(contextSource)
     var sourceData = contextSource.getImageData(0, 0, width, height);
     // create an image if the previous image doesn’t exist
     if (!lastImageData) lastImageData = contextSource.getImageData(0, 0, width, height);
@@ -199,15 +221,26 @@ function checkAreas() {
               // over a small limit, consider that a movement is detected
               // play a note and show a visual feedback to the user
               console.log(thisSide);
-              if(thisSide.name == 'right'){
-                //playRipples();
-              } else {
-                //p
-              }
-              //playHover(drum);          
+              playPendulum();      
           }
         }
     }
+}
+
+function playPendulum(){
+  //populate pendulums
+  rightSide = sides[0];
+  width = rightSide.width;
+  height = rightSide.height;
+  console.log(width);
+  console.log(height);
+  for(let w = 50; w < width; w+= (w/8)){
+    for(let h = 50; h < height; h += 100){
+      p = new Pendulum(createVector(w,h),100);
+      p.render();
+    }
+  }
+  //if onClick 
 }
 
 // function playAnimate(drum){
@@ -230,7 +263,7 @@ function setAllDrumReadyStatus(isReady){
 
 function cameraStarted(){
   $("#errorMsg").addClass("d-none");
-  $("#webcam-caption").html("on");
+  //$("#webcam-caption").html("on");
   $("#webcam-control").removeClass("webcam-off");
   $("#webcam-control").addClass("webcam-on");
   $(".webcam-container").removeClass("d-none");
@@ -244,6 +277,10 @@ function cameraStopped(){
   $("#webcam-control").removeClass("webcam-on");
   $("#webcam-control").addClass("webcam-off");
   $(".webcam-container").addClass("d-none");
-  $("#webcam-caption").html("Click to Start Webcam");
+  //$("#webcam-caption").html("Click to Start Webcam");
   $('.md-modal').removeClass('md-show');
+}
+
+const displayError = (e) => {
+    console.log(e)
 }
