@@ -40,8 +40,8 @@ function setup(){
   height = leftSide.height;
   let i = 0;
   
-  for(let h = 50; h < height*2; h += 50){
-    for(let w = 50; w < width*2; w+= 50){
+  for(let h = 20; h < height*2; h += 50){
+    for(let w = 40; w < 1190; w+= 50){
       pendulums[i] = new Pendulum(createVector(w,h),30);
       i++;
     }
@@ -149,7 +149,7 @@ function fastAbs(value) {
 
 function threshold(value) {
 //Display jump to trigger?
-  return (value > 0x15) ? 0xFF : 0;
+  return (value > 0x10) ? 0xFF : 0;
 }
 
 function differenceAccuracy(target, data1, data2) {
@@ -173,7 +173,7 @@ function checkAreas() {
     //right side, pendulum
       //right side
       var thisSide = sides[side];
-      if(thisSide.x>0 || thisSide.y>0){
+      if(thisSide.x>=0 || thisSide.y>=0){
         var blendedData = contextBlended.getImageData(thisSide.x, thisSide.y, thisSide.width, thisSide.height);
           var i = 0;
           var average = 0;
@@ -195,39 +195,9 @@ function checkAreas() {
           // calculate an average between of the color values of the drum area
           average = Math.round(average / (blendedData.data.length * 0.25));
           //console.log(average);
-          if (average > 8) {
-              const val = Math.floor(map(highestAverageSpot, 0, blendedData.data.length/8, 0, pendulums.length-1))
+          if (average > 6) {
+              const val = Math.floor(map(highestAverageSpot, 0, blendedData.data.length/6, 0, pendulums.length-1))
               playPendulum(val)
-          }
-        } else {
-          var blendedData = contextBlended.getImageData(thisSide.x, thisSide.y, thisSide.width, thisSide.height);
-          var i = 0;
-          var average = 0;
-          var highestAverageSpot = 0;
-          var currHighest = 0;
-          
-          // loop over the pixels
-          while (i < (blendedData.data.length * 0.25)) {
-              // make an average between the color channel
-              var currSum = (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]) / 3
-              var sumComparison = blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+3] + blendedData.data[i*4+4] + blendedData.data[i*4+5]
-              if (sumComparison > currHighest) {
-                highestAverageSpot = i;
-                currHighest = sumComparison;
-              }
-              average += currSum;
-              ++i;
-          }
-          // calculate an average between of the color values of the drum area
-          average = Math.round(average / (blendedData.data.length * 0.25));
-          //console.log(average);
-          if (average > 10) {
-            var x = (highestAverageSpot / 4) % thisSide.width;
-            var y = Math.floor((highestAverageSpot / 4) / thisSide.width);
-            console.log(x)
-            //console.log(y)
-            //ellipse(56, 46, 55, 55);
-            //triggeredLocation(x, y)
           }
         }
       }
@@ -235,13 +205,13 @@ function checkAreas() {
 
 
 function playPendulum(val){
-  if (val == null || val == 0){
+  if (val == null || val == 0 || val == 1){
     for (var p in pendulums){
       pendulums[p].render(false);
     }
   }
   //console.log(val)
-  if (val < pendulums.length && val != 0){
+  if (val < pendulums.length && val != 0 && val!=1){
     //console.log("will do")
     pendulums[val].render(true);
   }
