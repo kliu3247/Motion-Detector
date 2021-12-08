@@ -16,7 +16,7 @@ class Pendulum{
         this.display();
 
         if(bool){
-            this.aVelocity += .5;
+            this.aVelocity += .4;
         }
     }    
     

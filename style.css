@@ -17,10 +17,56 @@ canvas {
   top: 0px;
 }
 
+#webcam-caption{
+  text-align: center;
+}
+
+#move-around{
+  color: #fff;
+  position:absolute;
+  z-index: 10;
+}
+
+#pendulum-button{
+  position:absolute;
+  z-index: 10;
+
+  background: #FFFFFF;
+  border-radius: 20px;
+
+  width: 163px;
+  height: 52px;
+
+  left: 1320px;
+  top: 360px;
+}
+
+#ripples-button{
+  position:absolute;
+  z-index: 10;
+
+  background: #FFFFFF;
+  border-radius: 20px;
+
+  width: 163px;
+  height: 52px;
+
+  left: 1320px;
+  top: 430px;
+}
+
+#space{
+  position:absolute;
+  left: 1200px;
+  z-index: 10;
+}
+
 .right {
+  z-index: 0;
 }
 
 .left {
+  z-index: 0;
 }
 
 #canvas-source {

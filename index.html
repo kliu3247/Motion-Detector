@@ -15,32 +15,26 @@
     <script src="js/Webcam.js"></script>
     <script src='js/pendulum.js'></script>
     <script src="js/motionDetection.js"></script>
-        <!-- <script src='js/motion-detection.js'></script> -->
-    <!-- <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
-   -->
-
 
     <video id="webcam" autoplay playsinline width = "1200" height="900"></video>
-    <!-- <canvas id="canvas" class="d-none"></canvas> -->
+    <canvas id="canvas" class="d-none"></canvas>
     
   </head>
   <body>
+    
+
     <main id="motion-app">
-      <div class="form-control webcam-start" id="webcam-control">
-              <label class="form-switch">
-              <input type="checkbox" id="webcam-switch">
-              <i></i> 
-              <span id="webcam-caption">Click to Start Webcam</span>
-              </label>                        
-      </div>
-      <div id="errorMsg" class="col-12 alert-danger d-none">
-      Fail to start camera <br>
-      1. Please allow permission to access camera. <br>
-      2. If you are browsing through social media built in browsers, look for the ... or browser icon on the right top/bottom corner, and open the page in Sarafi (iPhone)/ Chrome (Android)
+
+      <div class="form-control webcam-start" id="webcam-control">   
       </div>
 
     <div class="md-modal md-effect-12">
-      <div class="app-panel md-content">            
+      <img src = "assets/take-up-space.png" id = "space">
+      <button class="button" id="pendulum-button">pendulums</button>
+      <button class="button" id="ripples-button">ripples</button>
+      <!--<button class="button" id="ripples-button">BUTTON</button-->
+
+        <div class="app-panel md-content">            
           <div class="webcam-container d-none">
               <video id="webcam" autoplay playsinline width="640" height="480"></video>
               <canvas id="canvas-source" width="1200" height="900"></canvas>

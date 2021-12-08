@@ -263,7 +263,7 @@ function setAllDrumReadyStatus(isReady){
 
 function cameraStarted(){
   $("#errorMsg").addClass("d-none");
-  $("#webcam-caption").html("on");
+  //$("#webcam-caption").html("on");
   $("#webcam-control").removeClass("webcam-off");
   $("#webcam-control").addClass("webcam-on");
   $(".webcam-container").removeClass("d-none");
@@ -277,7 +277,7 @@ function cameraStopped(){
   $("#webcam-control").removeClass("webcam-on");
   $("#webcam-control").addClass("webcam-off");
   $(".webcam-container").addClass("d-none");
-  $("#webcam-caption").html("Click to Start Webcam");
+  //$("#webcam-caption").html("Click to Start Webcam");
   $('.md-modal').removeClass('md-show');
 }
 
